@@ -145,7 +145,7 @@ $conn->close();
         }
 
         button {
-            background-color: #007bff;
+            background-color: #00b3b3;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -170,12 +170,12 @@ $conn->close();
         }
 
         th {
-            background-color: #007bff;
+            background-color: #00b3b3;
             color: white;
         }
 
         .action-btn a {
-            color: #007bff;
+            color: #00b3b3;
             text-decoration: none;
             margin-right: 10px;
         }
@@ -260,6 +260,4 @@ $conn->close();
 
 </html>
 
-<?php
-$conn->close();
-?>
+
