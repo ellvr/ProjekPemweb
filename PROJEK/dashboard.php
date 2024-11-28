@@ -2,8 +2,8 @@
 session_start();
 $errorMessage = '';
 $servername = "localhost";
-$dbUsername = "root";
-$dbPassword = "";
+$dbUsername = "pemweb";
+$dbPassword = "admin_123";
 $dbname = "layanan";
 
 // Buat koneksi
@@ -40,6 +40,24 @@ if (!isset($_SESSION['fullname']) || !isset($_SESSION['email'])) {
     }
     $stmt->close();
 }
+
+$query = "SELECT judul, link FROM tb_artikel ORDER BY created_at DESC LIMIT 3"; // Hanya ambil 3 artikel
+$result = $conn->query($query);
+
+// $query = "SELECT judul, link FROM tb_artikel";  // Replace with your actual table and column names
+// $result = $conn->query($query);
+
+// if ($result->num_rows > 0) {
+//     while ($row = $result->fetch_assoc()) {
+//         echo '<div class="article-card">';
+//         echo '<p>' . htmlspecialchars($row['judul']) . '</p>';
+//         echo '<p>' . htmlspecialchars($row['link']) . '</p>';
+//         echo '</div>';
+//     }
+// } else {
+//     echo "No articles found.";
+// }
+
 
 ?>
 
@@ -83,7 +101,7 @@ if (!isset($_SESSION['fullname']) || !isset($_SESSION['email'])) {
     </div>
 
     <!-- Main content -->
-    <div class="main-content">
+    <d class="main-content">
         <!-- Welcome Section -->
         <section class="welcome-section">
             <div class="image-section">
@@ -158,18 +176,44 @@ if (!isset($_SESSION['fullname']) || !isset($_SESSION['email'])) {
         <section class="artikel-kesehatan">
             <h2>Artikel Kesehatan</h2>
             <div class="article-cards">
-                <div class="article-card">
-                    <p>Tips Membiasakan Anak Makan Buah</p>
-                </div>
-                <div class="article-card">
-                    <p>Bahaya Perokok Pasif</p>
-                </div>
-                <div class="article-card">
-                    <p>Olahraga Untuk Lansia</p>
-                </div>
+                <?php
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<div class="article-card">';
+                        echo '<h3>' . htmlspecialchars($row['judul']) . '</h3>';
+                        echo '<a href="' . htmlspecialchars($row['link']) . '" target="_blank">Baca Artikel</a>';
+                        echo '</div>';
+                    }
+                } else {
+                    echo "No articles found.";
+                }
+                ?>
             </div>
-        </section>
+            <!-- Tombol Lihat Selengkapnya -->
+            <button id="load-more-btn">Lihat Selengkapnya</button>
+                
+            </div>
 
+        </section>
+        <script>
+            let offset = 3; // Awal offset, artikel ke-4
+            document.getElementById('load-more-btn').addEventListener('click', function () {
+                fetch('artikel.php?offset=' + offset)
+                    .then(response => response.text())
+                    .then(data => {
+                        if (data.trim() !== "") {
+                            // Tambahkan artikel ke dalam kontainer
+                            document.querySelector('.article-cards').innerHTML += data;
+                            // Update offset
+                            offset += 3;
+                        } else {
+                            // Jika tidak ada artikel lagi, sembunyikan tombol
+                            document.getElementById('load-more-btn').style.display = 'none';
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        </script>
         <!-- Kata Mereka Section -->
         <section class="footer">
             <h2>LocalWeb</h2>
@@ -179,26 +223,26 @@ if (!isset($_SESSION['fullname']) || !isset($_SESSION['email'])) {
             <hr>
             <p>Made With Love by ciwi ciwi developer</p>
         </section>
-    </div>
+        </div>
 
-    <script>
-        function toggleDropdown() {
-            document.getElementById("dropdown").classList.toggle("show");
-        }
+        <script>
+            function toggleDropdown() {
+                document.getElementById("dropdown").classList.toggle("show");
+            }
 
-        // Tutup dropdown jika pengguna mengklik di luar elemen
-        window.onclick = function (event) {
-            if (!event.target.matches('.username')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
+            // Tutup dropdown jika pengguna mengklik di luar elemen
+            window.onclick = function (event) {
+                if (!event.target.matches('.username')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-content");
+                    for (var i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                        }
                     }
                 }
             }
-        }
-    </script>
+        </script>
 </body>
 
 </html>

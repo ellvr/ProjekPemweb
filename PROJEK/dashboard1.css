@@ -311,6 +311,11 @@ body {
 
 .artikel-kesehatan .article-cards {
     display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 kolom */
+    gap: 16px; /* Jarak antar kolom dan baris (kurangi jika terlalu renggang) */
+    grid-auto-rows: minmax(200px, auto); /* Membuat tinggi baris lebih fleksibel */
+    gap: 16px; /* Jarak antar kartu artikel */
     justify-content: space-around;
     max-width: 1200px;
     margin: 0 auto;
@@ -320,9 +325,24 @@ body {
     background-color: #f9f9f9;
     padding: 30px;
     border-radius: 8px;
-    width: 30%;
+    /* width: 30%; */
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#load-more-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #00b3b3; /* Tombol hijau */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#load-more-btn:hover {
+    background-color: #08bcbc; /* Warna tombol saat hover */
 }
 
 .article-card p {
