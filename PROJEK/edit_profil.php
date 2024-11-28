@@ -34,7 +34,7 @@ if (!isset($_SESSION['fullname']) || !isset($_SESSION['email'])) {
     $stmt = $conn->prepare("SELECT fullname, password, email, profile_picture FROM tb_user WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
-    $stmt->bind_result($fullname, $email, $dbProfilePic, $password); 
+    $stmt->bind_result($fullname, $email, $dbProfilePic, $password);
     if ($stmt->fetch()) {
         $_SESSION['fullname'] = $fullname;
         $_SESSION['email'] = $email;
@@ -85,46 +85,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Update other user data
-    $fullname = !empty($_POST['fullname']) ? $_POST['fullname'] : $_SESSION['fullname'];
-    $username = !empty($_POST['username']) ? $_POST['username'] : $_SESSION['username'];
-    $email = !empty($_POST['email']) ? $_POST['email'] : $_SESSION['email'];
-    $newPassword = !empty($_POST['password']) ? $_POST['password'] : $_SESSION['password'];
+    $fullname = $_POST['fullname'];
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $newPassword = $_POST['password']; // Password baru yang dimasukkan pengguna
+    $currentUsername = $_SESSION['username'];
 
-    // Cek konfirmasi kata sandi jika ada perubahan
-    if (!empty($_POST['password']) && ($_POST['password'] !== $_POST['confirm_password'])) {
-        $errorMessage = "Password dan konfirmasi password tidak cocok.";
+    // Cek jika password baru diisi
+    if (!empty($newPassword)) {
+        if ($newPassword !== $_POST['confirm_password']) {
+            $errorMessage = "Password dan konfirmasi password tidak cocok.";
+        } else {
+            // Hash password baru sebelum disimpan
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+            $stmt = $conn->prepare("UPDATE tb_user SET fullname = ?, email = ?, password = ?, username = ? WHERE username = ?");
+            $stmt->bind_param("sssss", $fullname, $email, $hashedPassword, $username, $currentUsername);
+            $stmt->execute();
+            $stmt->close();
+
+            $_SESSION['password'] = $hashedPassword;
+        }
     } else {
-        // Jika tidak ada perubahan password, gunakan password lama
-        $passwordToSave = $newPassword ? $newPassword : $_SESSION['password'];
-
-        // Update informasi pengguna di database tanpa enkripsi password jika tidak diubah
-        $currentUsername = $_SESSION['username']; // username lama
-        $stmt = $conn->prepare("UPDATE tb_user SET fullname = ?, email = ?, password = ?, username = ? WHERE username = ?");
-        $stmt->bind_param("sssss", $fullname, $email, $passwordToSave, $username, $currentUsername);
+        // Jika password tidak diubah, update tanpa mengubah password
+        $stmt = $conn->prepare("UPDATE tb_user SET fullname = ?, email = ?, username = ? WHERE username = ?");
+        $stmt->bind_param("ssss", $fullname, $email, $username, $currentUsername);
         $stmt->execute();
         $stmt->close();
-
-        // Update data di session dengan data terbaru
-        $_SESSION['fullname'] = $fullname;
-        $_SESSION['email'] = $email;
-        $_SESSION['username'] = $username;
-        if ($newPassword) {
-            $_SESSION['password'] = $passwordToSave; // update session jika password diubah
-        }else {
-            $_SESSION['password'] = $newPassword;
-        }
-       
-        
-
-        header('Location: profil.php');
-        exit();
     }
 
+    // Update session
+    $_SESSION['fullname'] = $fullname;
+    $_SESSION['email'] = $email;
+    $_SESSION['username'] = $username;
+
+    header('Location: profil.php');
+    exit();
 }
 
 // Close the database connection
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -206,11 +208,11 @@ $conn->close();
                 <div class="login">Username</div>
                 <input type="text" name="username" value="<?= $_SESSION['username']; ?>" class="frame-item">
 
-                <div class="login">Kata Sandi</div>
-                <input type="text" name="password" value="<?= $_SESSION['password']; ?>" class="frame-item">
+                <div class="login">Kata Sandi Baru</div>
+                <input type="password" name="password" class="frame-item" placeholder="Masukkan password baru">
 
-                <div class="login">Konfirmasi Kata Sandi</div>
-                <input type="password" name="confirm_password" value="<?= $_SESSION['password']; ?>" class="frame-item">
+                <div class="login">Konfirmasi Kata Sandi Baru</div>
+                <input type="password" name="confirm_password" class="frame-item" placeholder="Konfirmasi password baru">
 
                 <div class="login">Alamat Email</div>
                 <input type="email" name="email" value="<?= $_SESSION['email']; ?>" class="frame-item" required>

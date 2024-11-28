@@ -8,8 +8,8 @@ if (!isset($_SESSION['username']) || !in_array($_SESSION['role'], ['admin', 'adm
 }
 
 $servername = "localhost";
-$dbUsername = "root";
-$dbPassword = "";
+$dbUsername = "pemweb";
+$dbPassword = "admin_123";
 $dbname = "layanan";
 
 $conn = new mysqli($servername, $dbUsername, $dbPassword, $dbname);

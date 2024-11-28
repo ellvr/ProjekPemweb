@@ -2,8 +2,8 @@
 session_start();
 
 $servername = "localhost";
-$dbUsername = "root";
-$dbPassword = "";
+$dbUsername = "pemweb";
+$dbPassword = "admin_123";
 $dbname = "layanan";
 
 $conn = new mysqli($servername, $dbUsername, $dbPassword, $dbname);
@@ -15,6 +15,7 @@ if ($conn->connect_error) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
     $password = htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8');
+
 
     if (empty($username) || empty($password)) {
         $_SESSION['error_message'] = "Username dan Password wajib diisi!";
@@ -31,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (password_verify($password, $user['password'])) { 
                 $_SESSION['username'] = $user['username']; // Simpan username di session
                 $_SESSION['role'] = $user['role']; // Simpan role di session
+                $_SESSION['password'] = $user['password'];
                 
                 // Arahkan berdasarkan role
                 if ($user['role'] == 'admin') {
