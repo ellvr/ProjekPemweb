@@ -31,13 +31,14 @@ if (isset($_GET['logout'])) {
 // Ambil data pengguna dari database jika belum tersimpan di session
 $username = $_SESSION['username'];
 if (!isset($_SESSION['fullname']) || !isset($_SESSION['email'])) {
-    $stmt = $conn->prepare("SELECT fullname, email, profile_picture FROM tb_user WHERE username = ?");
+    $stmt = $conn->prepare("SELECT fullname, password, email, profile_picture FROM tb_user WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
-    $stmt->bind_result($fullname, $email, $dbProfilePic);
+    $stmt->bind_result($fullname, $email, $dbProfilePic, $password); 
     if ($stmt->fetch()) {
         $_SESSION['fullname'] = $fullname;
         $_SESSION['email'] = $email;
+        $_SESSION['password'] = $password;
         $_SESSION['profile_picture'] = $dbProfilePic ? $dbProfilePic : 'uploads/default.png';
     }
     $stmt->close();

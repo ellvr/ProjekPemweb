@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($user['password'] === $password) { // Cocokkan password langsung
                 $_SESSION['success_message'] = "Login berhasil!";
                 $_SESSION['username'] = $user['username']; // Simpan username di session
+                $_SESSION['password'] = $user['password']; // Simpan password di session
                 header('Location: dashboard.php'); // Redirect ke dashboard
                 exit();
             } else {

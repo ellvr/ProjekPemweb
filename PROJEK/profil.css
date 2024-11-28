@@ -179,7 +179,7 @@ header .logout-btn {
     width: 100%;
     position: relative;
     background-color: #fefefe;
-    height: 1600px;
+    height: 1000px;
     overflow: hidden;
     text-align: left;
     font-size: 24px;
@@ -211,7 +211,7 @@ footer {
     display: flex;
     justify-content: space-between;
     padding: 65px;
-    position: fixed;
+    position: relative;
     width: 100%;
     bottom: 0;
 }
