@@ -1,0 +1,362 @@
+/* General Settings */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'helvetica', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #00b3b3;
+    backdrop-filter: blur 20px;
+    padding: 10px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+}
+
+.navbar .logo h2 {
+    color: white;
+    margin: 0;
+    font-size: 24px;
+}
+
+.navbar ul.menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.navbar ul.menu li {
+    margin-right: 20px;
+}
+
+.navbar ul.menu li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.navbar .user-info {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .user-info span {
+    color: white;
+    margin-right: 20px;
+}
+.navbar .profile-img {
+    padding: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.menu {
+    list-style-type: none; /* Menghilangkan bullet points */
+    padding: 0;
+    margin: 0;
+}
+
+.menu > li {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.menu li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.services-dropdown {
+    display: none;
+    position: absolute;
+    background-color: rgba(174, 213, 231, 0.705);
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 150px;
+    padding: 0; /* Menghilangkan padding default */
+}
+
+.menu li:hover .services-dropdown {
+    display: block;
+}
+
+.services-dropdown li {
+    list-style: none; /* Menghilangkan bullet points untuk dropdown */
+    padding: 0; /* Menghilangkan padding default */
+}
+
+.services-dropdown li a {
+    display: block; /* Ambil seluruh lebar */
+    padding: 10px 10px; /* Tambahkan padding */
+    color: black;
+    text-decoration: none;
+    width: 100%; /* Pastikan mengambil seluruh lebar */
+}
+.services-dropdown li a:hover {
+    background-color: #17a2b8; /* Warna latar belakang saat hover */
+    color: white; /* Ganti warna teks saat hover jika diperlukan */
+}
+.logout-btn {
+    background-color: white;
+    color: #00b3b3;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+}
+/* Welcome Section */
+.welcome-section {
+    background: url('bgDashboard.png') no-repeat center center;/* Menggunakan gambar dokter sebagai background */
+    background-size: cover; /* Mengatur gambar agar menutupi seluruh area */
+    background-position: center; /* Menempatkan gambar di tengah */
+    color: white;
+    padding: 80px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80vh;
+}
+
+.welcome-section .text-section {
+    width: 50%;
+    background-color: transparent; /* Memberikan efek transparansi pada teks */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.welcome-section .text-section h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.welcome-section .text-section p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.welcome-section .image-section {
+    display: none; /* Menyembunyikan elemen gambar karena sudah dijadikan background */
+}
+.about {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 20px;
+    padding: 40px;
+    margin: 40px auto; /* Jarak antara header dan kotak di bawahnya */
+    max-width: 1100px; /* Sesuaikan dengan lebar container */
+}
+
+.about-ruang-peduli-img {
+    width: 50%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.about-ruang-peduli-content {
+    width: 50%;
+    text-align: center; /* Mengatur teks di tengah */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertikal tengah */
+    align-items: center; /* Horizontal tengah */
+}
+
+.about-ruang-peduli-content h3 {
+    font-size: 2rem;
+    color: #00ADB5;
+    margin-bottom: 20px;
+}
+
+.about-ruang-peduli-content p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: justify; /* Agar paragraf juga di tengah */
+}
+
+.about-ruang-peduli-content .daftar {
+    display: inline-block;
+    background-color: #00ADB5;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.about-ruang-peduli-content .daftar:hover {
+    background-color: #007a7f;
+}
+
+/* Our Service Section */
+.our-service {
+    background-color: white;
+    padding: 60px 20px;
+    text-align: center;
+
+}
+
+.our-service h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.our-service .service-cards {
+    display: flex;
+    justify-content: space-around;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.service-card {
+    background-color: #f9f9f9;
+    padding: 40px;
+    border-radius: 8px;
+    width: 30%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.service-card h3 {
+    text-decoration: none;
+    color: #00b3b3;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.service-card p {
+    font-size: 16px;
+    line-height: 1.6;
+    
+}
+
+/* Our Team Section */
+.our-team {
+    background-color: white;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.our-team h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.our-team .team-cards {
+    display: flex;
+    justify-content: space-around;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.team-card {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    width: 30%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.team-card img {
+    border-radius: 50%;
+    max-width: 100px;
+    height: auto;
+    margin-bottom: 20px;
+}
+.img-center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.team-card h3 {
+    color: #00b3b3;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.team-card p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Artikel Kesehatan Section */
+.artikel-kesehatan {
+    background-color: white;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.artikel-kesehatan h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.artikel-kesehatan .article-cards {
+    display: flex;
+    justify-content: space-around;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.article-card {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    width: 30%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.article-card p {
+    font-size: 16px;
+}
+
+/* Kata Mereka Section */
+.footer {
+    background-color: #00b3b3;
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.footer h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.footer .testimonial-card {
+    background-color: transparent;
+    color: #333;
+    padding: 10px;
+    border-radius: 8px;
+    width: 50%;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+
+
+.footer .testimonial-card p {
+    color: #f4f4f4;
+    font-size: 18px;
+    line-height: 1.6;
+}

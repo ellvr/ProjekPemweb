@@ -1,0 +1,308 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #00ADB5;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+header .logo-img {
+    width: 40px;
+    height: 40px;
+}
+
+header nav ul {
+    list-style-type: none;
+    display: flex;
+    gap: 20px;
+}
+
+header nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+header .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+header .profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+header .logout-btn {
+    background-color: #EDF5E1;
+    color: #00ADB5;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.menu {
+    list-style-type: none; /* Menghilangkan bullet points */
+    padding: 0;
+    margin: 0;
+}
+
+.menu > li {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.menu li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.services-dropdown {
+    display: none;
+    position: absolute;
+    background-color: rgba(174, 213, 231, 0.705);
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 150px;
+    padding: 0; /* Menghilangkan padding default */
+}
+
+.menu li:hover .services-dropdown {
+    display: block;
+}
+
+.services-dropdown li {
+    list-style: none; /* Menghilangkan bullet points untuk dropdown */
+    padding: 0; /* Menghilangkan padding default */
+}
+
+.services-dropdown li a {
+    display: block; /* Ambil seluruh lebar */
+    padding: 10px 10px; /* Tambahkan padding */
+    color: rgb(255, 254, 254);
+    text-decoration: none;
+    width: 100%; /* Pastikan mengambil seluruh lebar */
+}
+.services-dropdown li a:hover {
+    background-color: #17a2b8; /* Warna latar belakang saat hover */
+    color: white; /* Ganti warna teks saat hover jika diperlukan */
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+    background-color: #EEEEEE;
+}
+
+.doctor-list {
+    width: 30%;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.doctor-item {
+    display: flex;
+    align-items: center;
+    background-color: #F7F7F7;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 400px; /* Adjust the width */
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+/* Styling for doctor image */
+.doctor-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+/* Styling for doctor information */
+.doctor-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.doctor-info h4 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.doctor-info p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #666;
+}
+
+.doctor-info span {
+    color: #FFD700; /* Warna kuning untuk bintang */
+    font-size: 1.2rem;
+}
+
+.doctor-info p:last-child {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
+}
+#default-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #666;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.message-display {
+    flex: 1;
+    background-color: #F2F2F2;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    padding: 10px;
+    background-color: #ffffff;
+    color: rgb(34, 23, 23);
+    display: flex;
+    align-items: center;
+}
+
+.chat-header-info {
+    display: flex;
+    align-items: center;
+}
+
+.chat-header-info .doctor-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.chat-messages {
+    padding: 10px;
+    height: 300px;
+    overflow-y: auto;
+    background-color: #fff;
+    margin-bottom: 10px;
+    border-radius: 10px; /* Untuk membulatkan sudut area pesan */
+    display: flex;
+    flex-direction: column; /* Agar pesan ditampilkan secara vertikal */
+}
+
+.sent-message {
+    background-color: #C8E6C9; /* Warna untuk pesan yang dikirim */
+    padding: 10px;
+    border-radius: 15px;
+    margin: 5px 0;
+    max-width: 70%; /* Lebar maksimum untuk pesan yang dikirim */
+    align-self: flex-end; /* Agar berada di kanan */
+}
+
+.received-message {
+    background-color: #E1F5FE; /* Warna untuk pesan diterima */
+    padding: 10px;
+    border-radius: 15px;
+    margin: 5px 0;
+    max-width: 70%; /* Lebar maksimum untuk pesan diterima */
+    align-self: flex-start; /* Agar berada di kiri */
+}
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    position: absolute; /* Change to absolute positioning */
+    bottom: 0; /* Stick to the bottom */
+    left: 0; /* Align with left */
+    right: 0; /* Align with right */
+}
+
+.chat-input input {
+    flex-grow: 1;
+    padding: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.chat-input button {
+    padding: 10px 20px;
+    background-color: #00ADB5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+footer {
+    background-color: #00ADB5;
+    color: white;
+    display: flex;
+
+    justify-content: space-between;
+    padding: 65px;
+}
+
+footer .footer-left {
+    width: 50%;
+}
+
+footer .footer-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 20%;
+}
+
+footer .footer-right ul {
+    list-style-type: none;
+}
+
+footer .footer-right ul li {
+    margin-bottom: 10px;
+}
+

@@ -1,0 +1,109 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100%;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+.image-side {
+  flex: 1;
+  width: 50%;
+  background: url('login-gambar.png') no-repeat center center;
+  background-size: cover;
+}
+
+.form-side {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+.form-box {
+  width: 90%;
+  max-width: 400px;
+  padding: 40px 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.input-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background-color: #00b8b8;
+  color: #fff;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #009696;
+}
+
+.login-link {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.login-link a {
+  text-decoration: none;
+  color: #00b8b8;
+  font-weight: bold;
+}
+
+.input-box label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}

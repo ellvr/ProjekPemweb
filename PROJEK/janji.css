@@ -1,0 +1,248 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #00ADB5;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+header .logo-img {
+    width: 40px;
+    height: 40px;
+}
+
+header nav ul {
+    list-style-type: none;
+    display: flex;
+    gap: 20px;
+}
+
+header nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+header .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+header .profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+header .logout-btn {
+    background-color: #EDF5E1;
+    color: #00ADB5;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.menu {
+    list-style-type: none; /* Menghilangkan bullet points */
+    padding: 0;
+    margin: 0;
+}
+
+.menu > li {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.menu li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.services-dropdown {
+    display: none;
+    position: absolute;
+    background-color: rgba(174, 213, 231, 0.705);
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 150px;
+    padding: 0; /* Menghilangkan padding default */
+}
+
+.menu li:hover .services-dropdown {
+    display: block;
+}
+
+.services-dropdown li {
+    list-style: none; /* Menghilangkan bullet points untuk dropdown */
+    padding: 0; /* Menghilangkan padding default */
+}
+
+.services-dropdown li a {
+    display: block; /* Ambil seluruh lebar */
+    padding: 10px 10px; /* Tambahkan padding */
+    color: rgb(255, 254, 254);
+    text-decoration: none;
+    width: 100%; /* Pastikan mengambil seluruh lebar */
+}
+.services-dropdown li a:hover {
+    background-color: #17a2b8; /* Warna latar belakang saat hover */
+    color: white; /* Ganti warna teks saat hover jika diperlukan */
+}
+.hero {
+    background-image: url('3.png');
+    background-size: cover;
+    background-position: center;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    padding: 4rem 0;
+}
+
+.hero h2 {
+    font-size: 3rem;
+    margin-bottom: 0;
+}
+
+.search-filter {
+    display: flex;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.search-bar {
+    flex: 1;
+}
+
+.search-bar input {
+    padding: 0.8rem;
+    width: 80%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn-search {
+    padding: 0.8rem 1.5rem;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.doctor-list {
+    flex: 3;
+}
+
+.doctor-card {
+    display: flex;
+    background-color: white;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: calc(100% - 2rem);
+    max-width: 100%;
+}
+
+.doctor-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 1.5rem;
+}
+
+.doctor-info h3 {
+    margin-bottom: 0.5rem;
+}
+
+.btn-appointment {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.filter-options {
+    flex: 1;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-options h4 {
+    margin-bottom: 1rem;
+}
+
+.filter-options ul {
+    list-style: none;
+}
+
+.filter-options ul li {
+    margin-bottom: 0.5rem;
+}
+
+.filter-options button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #f00;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+footer {
+    background-color: #00ADB5;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 65px;
+    width: 100%;
+    bottom: 0;
+}
+
+footer .footer-left {
+    width: 50%;
+}
+
+footer .footer-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 20%;
+}
+
+footer .footer-right ul {
+    list-style-type: none;
+}
+
+footer .footer-right ul li {
+    margin-bottom: 10px;
+}

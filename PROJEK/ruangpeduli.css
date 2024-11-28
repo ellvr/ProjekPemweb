@@ -1,0 +1,273 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+header {
+    background-color: #00ADB5;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+}
+
+header .logo-img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+header nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+header .profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.logout {
+    background-color: #EDF5E1;
+    color: #00ADB5;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.menu {
+    list-style-type: none; /* Menghilangkan bullet points */
+    padding: 0;
+    margin: 0;
+}
+
+.menu > li {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.menu li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.services-dropdown {
+    display: none;
+    position: absolute;
+    background-color: rgba(174, 213, 231, 0.705);
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 150px;
+    padding: 0; 
+}
+
+.menu li:hover .services-dropdown {
+    display: block;
+}
+
+.services-dropdown li {
+    list-style: none;
+    padding: 0; 
+}
+
+.services-dropdown li a {
+    display: block; 
+    padding: 10px 10px; 
+    color: rgb(255, 254, 254);
+    text-decoration: none;
+    width: 100%; 
+}
+.services-dropdown li a:hover {
+    background-color: #17a2b8;
+    color: white; 
+}
+
+.hero {
+    background-image: url('3.png');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero h2 {
+    font-size: 3rem;
+}
+
+.about {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 20px;
+    padding: 40px;
+    margin: 40px auto; /* Jarak antara header dan kotak di bawahnya */
+    max-width: 1100px; /* Sesuaikan dengan lebar container */
+}
+
+.about-ruang-peduli-img {
+    width: 50%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.about-ruang-peduli-content {
+    width: 50%;
+    text-align: center; /* Mengatur teks di tengah */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertikal tengah */
+    align-items: center; /* Horizontal tengah */
+}
+
+.about-ruang-peduli-content h3 {
+    font-size: 2rem;
+    color: #00ADB5;
+    margin-bottom: 20px;
+}
+
+.about-ruang-peduli-content p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: justify; /* Agar paragraf juga di tengah */
+}
+
+.about-ruang-peduli-content .daftar {
+    display: inline-block;
+    background-color: #00ADB5;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.about-ruang-peduli-content .daftar:hover {
+    background-color: #007a7f;
+}
+
+.daftar {
+    width: 120px; /* Lebar tombol lebih kecil agar tidak panjang */
+    padding: 10px; /* Padding standar */
+    background-color: #00ADB5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center; /* Memastikan teks rata tengah */
+    font-size: 1rem; /* Ukuran font */
+    margin: 20px auto; /* Menambahkan margin agar posisi tombol di tengah */
+    display: block; /* Agar tombol bisa diatur ke tengah dengan margin auto */
+}
+
+.services {
+    display: flex;
+    justify-content: space-around;
+    margin: 40px 20px;
+}
+
+.service-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    width: 30%;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.service-card img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+}
+
+.service-card h4 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.service-card p {
+    font-size: 1rem;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.cari {
+    padding: 10px 20px;
+    background-color: #00ADB5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+footer {
+    margin-top: auto; /* Memaksa footer tetap di bawah */
+    background-color: #00ADB5;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 65px;
+}
+
+footer .footer-left {
+    width: 50%;
+}
+
+footer .footer-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 20%;
+}
+
+footer .footer-right ul {
+    list-style-type: none;
+}
+
+footer .footer-right ul li {
+    margin-bottom: 10px;
+}
