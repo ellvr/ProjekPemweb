@@ -36,9 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows > 0) {
             $_SESSION['alert_message'] = "Username atau email sudah terdaftar!";
         } else {
+            // Enkripsi password sebelum disimpan
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
             // Masukkan data ke database
             $stmt = $conn->prepare("INSERT INTO tb_user (username, email, password) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $username, $email, $password);
+            $stmt->bind_param("sss", $username, $email, $hashedPassword);
             $stmt->execute();
             $_SESSION['success_message'] = "Registrasi berhasil! Silakan login.";
 
@@ -56,6 +59,7 @@ if (isset($_SESSION['success_message'])) {
 
 $conn->close();
 ?>
+
 
 
 <!DOCTYPE html>

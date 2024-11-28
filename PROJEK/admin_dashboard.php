@@ -1,89 +1,99 @@
 <?php
 session_start();
 
-// Cek apakah pengguna sudah login dan apakah mereka adalah admin
-if (!isset($_SESSION['username'])) {
-    header('Location: login.php'); // Jika belum login, arahkan ke login
+if (!isset($_SESSION['username']) || !in_array($_SESSION['role'], ['admin', 'admin_super'])) {
+    header('Location: admin_dashboard.php');
     exit();
 }
 
-// Arahkan jika bukan admin
-if ($_SESSION['role'] !== 'admin') {
-    header('Location: login.php'); // Jika bukan admin, arahkan ke halaman lain
-    exit();
-}
-
-// Koneksi ke database
 $servername = "localhost";
 $dbUsername = "root";
 $dbPassword = "";
 $dbname = "layanan";
 
 $conn = new mysqli($servername, $dbUsername, $dbPassword, $dbname);
-
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Menambahkan pengguna baru
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+// Tambah pengguna baru
+if (isset($_POST['add_user'])) {
+    $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
+    $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
 
-    // Insert user baru ke database
     $stmt = $conn->prepare("INSERT INTO tb_user (username, email, password, role) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss", $username, $email, $password, $role);
-    $stmt->execute();
-    header('Location: admin_dashboard.php');  // Refresh halaman setelah tambah pengguna
+
+    if ($stmt->execute()) {
+        $_SESSION['success_message'] = "Pengguna berhasil ditambahkan!";
+    } else {
+        $_SESSION['error_message'] = "Gagal menambahkan pengguna: " . $conn->error;
+    }
+    header('Location: admin_dashboard.php');
     exit();
 }
 
-// Mengambil data pengguna untuk ditampilkan
-$stmt = $conn->prepare("SELECT * FROM tb_user");
-$stmt->execute();
-$result = $stmt->get_result();
 
-// Hapus data pengguna
+// Query data pengguna
+$query = "SELECT * FROM tb_user";
+$result = $conn->query($query);
+
+if (!$result) {
+    die("Query gagal: " . $conn->error);
+}
+
 if (isset($_GET['delete_id'])) {
     $delete_id = $_GET['delete_id'];
-    $delete_stmt = $conn->prepare("DELETE FROM tb_user WHERE id = ?");
-    $delete_stmt->bind_param("i", $delete_id);
-    $delete_stmt->execute();
-    header('Location: admin_dashboard.php'); // Redirect setelah menghapus
+    // Ambil data pengguna yang ingin dihapus
+    $stmt = $conn->prepare("SELECT * FROM tb_user WHERE id = ?");
+    $stmt->bind_param("i", $delete_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_to_delete = $result->fetch_assoc();
+
+    // Cek apakah pengguna ada
+    if ($user_to_delete) {
+        // Cek peran untuk menghapus
+        if ($_SESSION['role'] === 'admin_super') {
+            // Admin Super bisa menghapus admin dan user, kecuali dirinya sendiri
+            if ($user_to_delete['username'] !== $_SESSION['username']) {
+                // Hapus pengguna
+                $delete_stmt = $conn->prepare("DELETE FROM tb_user WHERE id = ?");
+                $delete_stmt->bind_param("i", $delete_id);
+                if ($delete_stmt->execute()) {
+                    $_SESSION['success_message'] = "Pengguna berhasil dihapus!";
+                } else {
+                    $_SESSION['error_message'] = "Gagal menghapus pengguna.";
+                }
+            } else {
+                $_SESSION['error_message'] = "Anda tidak dapat menghapus akun Anda sendiri!";
+            }
+        } elseif ($_SESSION['role'] === 'admin') {
+            // Admin hanya bisa menghapus user, tidak bisa menghapus admin atau admin_super
+            if ($user_to_delete['role'] === 'user' && $user_to_delete['username'] !== $_SESSION['username']) {
+                // Hapus pengguna
+                $delete_stmt = $conn->prepare("DELETE FROM tb_user WHERE id = ?");
+                $delete_stmt->bind_param("i", $delete_id);
+                if ($delete_stmt->execute()) {
+                    $_SESSION['success_message'] = "Pengguna berhasil dihapus!";
+                } else {
+                    $_SESSION['error_message'] = "Gagal menghapus pengguna.";
+                }
+            } else {
+                $_SESSION['error_message'] = "Anda tidak dapat menghapus pengguna ini!";
+            }
+        }
+    } else {
+        $_SESSION['error_message'] = "Pengguna tidak ditemukan!";
+    }
+
+    header('Location: admin_dashboard.php');
     exit();
 }
 
-// Edit data pengguna
-if (isset($_GET['edit_id'])) {
-    $edit_id = $_GET['edit_id'];
-    $stmt_edit = $conn->prepare("SELECT * FROM tb_user WHERE id = ?");
-    $stmt_edit->bind_param("i", $edit_id);
-    $stmt_edit->execute();
-    $result_edit = $stmt_edit->get_result();
-
-    // Pastikan data ditemukan
-    if ($result_edit->num_rows > 0) {
-        $user = $result_edit->fetch_assoc();
-    } else {
-        echo "Pengguna tidak ditemukan.";
-        exit();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $role = $_POST['role'];
-
-        $update_stmt = $conn->prepare("UPDATE tb_user SET username = ?, email = ?, role = ? WHERE id = ?");
-        $update_stmt->bind_param("sssi", $username, $email, $role, $edit_id);
-        $update_stmt->execute();
-        header('Location: admin_dashboard.php');
-        exit();
-    }
-}
-
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -95,103 +105,157 @@ if (isset($_GET['edit_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
         }
 
-        table,
-        th,
-        td {
-            border: 1px solid black;
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        th,
-        td {
-            padding: 8px;
+        h1, h2 {
             text-align: center;
         }
 
         form {
             margin-bottom: 20px;
+            padding: 20px;
         }
 
         label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .action-btn a {
+            color: #007bff;
+            text-decoration: none;
             margin-right: 10px;
         }
 
-        .action-btn {
-            margin-right: 10px;
+        .action-btn a:hover {
+            text-decoration: underline;
+        }
+
+        .logout-btn {
+            display: block;
+            margin: 0 auto 20px;
+            text-align: center;
         }
     </style>
+    
 </head>
 
 <body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <a href="login.php" class="logout-btn">Logout</a>
 
-    <h1>Admin Dashboard - Kelola Data Pengguna</h1>
+        <?php if (isset($_SESSION['error_message'])): ?>
+            <p style="color: red;"><?= $_SESSION['error_message']; unset($_SESSION['error_message']); ?></p>
+        <?php endif; ?>
 
-    <!-- Form untuk menambahkan pengguna baru -->
-    <form action="admin_dashboard.php" method="POST">
-        <a href="login.php" class="logout-btn">logout</a>
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <p style="color: green;"><?= $_SESSION['success_message']; unset($_SESSION['success_message']); ?></p>
+        <?php endif; ?>
+
         <h2>Tambah Pengguna Baru</h2>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        <label for="role">Role:</label>
-        <select name="role" id="role">
-            <option value="admin">Admin</option>
-            <option value="user">User</option>
-        </select><br><br>
-        <button type="submit" name="add_user">Tambah Pengguna</button>
-    </form>
-
-    <h2>Daftar Pengguna</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($row = $result->fetch_assoc()): ?>
-                <tr>
-                    <td><?php echo $row['id']; ?></td>
-                    <td><?php echo $row['username']; ?></td>
-                    <td><?php echo $row['email']; ?></td>
-                    <td><?php echo $row['role']; ?></td>
-                    <td>
-                        <a href="admin_dashboard.php?edit_id=<?php echo $row['id']; ?>" class="action-btn">Edit</a>
-                        <a href="admin_dashboard.php?delete_id=<?php echo $row['id']; ?>" class="action-btn"
-                            onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?')">Delete</a>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
-
-    <?php if (isset($_GET['edit_id'])): ?>
-        <h2>Edit Pengguna</h2>
-        <form action="admin_dashboard.php?edit_id=<?php echo $_GET['edit_id']; ?>" method="POST">
+        <form action="admin_dashboard.php" method="POST">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="<?php echo $user['username']; ?>" required><br><br>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="<?php echo $user['email']; ?>" required><br><br>
-            <label for="role">Role:</label>
-            <select name="role" id="role">
-                <option value="admin" <?php echo ($user['role'] == 'admin') ? 'selected' : ''; ?>>Admin</option>
-                <option value="user" <?php echo ($user['role'] == 'user') ? 'selected' : ''; ?>>User</option>
-            </select><br><br>
-            <button type="submit" name="update_user">Update Pengguna</button>
-        </form>
-    <?php endif; ?>
+            <input type="text" id="username" name="username" required>
 
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="role">Role:</label>
+            <select id="role" name="role">
+                <option value="user">User</option>
+                <?php if ($_SESSION['role'] === 'admin_super'): ?>
+                    <option value="admin">Admin</option>
+                <?php endif; ?>
+            </select>
+
+            <button type="submit" name="add_user">Tambah Pengguna</button>
+        </form>
+
+        <h2>Daftar Pengguna</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($row['id']); ?></td>
+                        <td><?= htmlspecialchars($row['username']); ?></td>
+                        <td><?= htmlspecialchars($row['email']); ?></td>
+                        <td><?= htmlspecialchars($row['role']); ?></td>
+                        <td class="action-btn">
+                            <a href="edit_user.php?id=<?= $row['id']; ?>">Edit</a>
+                            <a href="admin_dashboard.php?delete_id=<?= $row['id']; ?>"
+                               onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?')">Hapus</a>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    </div>
 </body>
 
 </html>

@@ -27,11 +27,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
 
-            if ($user['password'] === $password) { // Cocokkan password langsung
-                $_SESSION['success_message'] = "Login berhasil!";
+            // Gunakan password_verify untuk memeriksa password yang terenkripsi
+            if (password_verify($password, $user['password'])) { 
                 $_SESSION['username'] = $user['username']; // Simpan username di session
-                $_SESSION['password'] = $user['password']; // Simpan password di session
-                header('Location: dashboard.php'); // Redirect ke dashboard
+                $_SESSION['role'] = $user['role']; // Simpan role di session
+                
+                // Arahkan berdasarkan role
+                if ($user['role'] == 'admin') {
+                    header('Location: admin_dashboard.php'); // Halaman admin
+                } else if ($user['role'] == 'admin_super') {
+                    header('Location: admin_dashboard.php'); // Halaman admin super
+                } else if ($user['role'] == 'user') {
+                    header('Location: dashboard.php'); // Halaman user
+                }
                 exit();
             } else {
                 $_SESSION['error_message'] = "Password salah!";
@@ -46,8 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $conn->close();
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
