@@ -209,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #00a3b3;
         }
 
         table {
@@ -240,10 +240,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             text-decoration: underline;
         }
 
+        .container-log {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
         .logout-btn {
-            display: block;
-            margin: 0 auto 20px;
-            text-align: center;
+            background-color: #00b3b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 8px 52px;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background-color: #00a3b3;
+        }
+
+        header{
+            display: flex;
+            background-color: #00b3b3;
+            color: white
+
         }
     </style>
 
@@ -251,20 +274,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body>
     <div class="container">
-        <h1><?= strtoupper(str_replace('_', ' ', htmlspecialchars($_SESSION['role']))); ?> DASHBOARD</h1>
-        <h2>Selamat Datang, <?= htmlspecialchars($_SESSION['username']); ?>!</h2>
-        <a href="artikel.php" class="logout-btn">Kelola Artikel</a>
-        <a href="login.php" class="logout-btn">Logout</a>
+        <div class="header">
+            <h1><?= strtoupper(str_replace('_', ' ', htmlspecialchars($_SESSION['role']))); ?> DASHBOARD</h1>
+            <h2>Selamat Datang, <?= htmlspecialchars($_SESSION['username']); ?>!</h2>
+            <div class="container-log">
+                <a href="artikel.php" class="logout-btn">Kelola Artikel</a>
+                <a href="login.php" class="logout-btn">Logout</a>
+            </div>
 
-        <?php if (isset($_SESSION['error_message'])): ?>
-            <p style="color: red;"><?= $_SESSION['error_message'];
-            unset($_SESSION['error_message']); ?></p>
-        <?php endif; ?>
+            <?php if (isset($_SESSION['error_message'])): ?>
+                <p style="color: red;"><?= $_SESSION['error_message'];
+                unset($_SESSION['error_message']); ?></p>
+            <?php endif; ?>
 
-        <?php if (isset($_SESSION['success_message'])): ?>
-            <p style="color: green;"><?= $_SESSION['success_message'];
-            unset($_SESSION['success_message']); ?></p>
-        <?php endif; ?>
+            <?php if (isset($_SESSION['success_message'])): ?>
+                <p style="color: green;"><?= $_SESSION['success_message'];
+                unset($_SESSION['success_message']); ?></p>
+            <?php endif; ?>
+        </div>
 
         <h2>Tambah Pengguna Baru</h2>
         <form action="admin_dashboard.php" method="POST">
@@ -315,7 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <?php endwhile; ?>
             </tbody>
         </table>
-        
+
         <a href="admin_dashboard.php">Kembali ke Dashboard</a>
     </div>
 </body>

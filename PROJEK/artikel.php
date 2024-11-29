@@ -240,11 +240,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             text-decoration: underline;
         }
 
-        .logout-btn {
-            display: block;
-            margin: 0 auto 20px;
-            text-align: center;
+        .container-log {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+
+        .logout-btn {
+            background-color: #00b3b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 8px 52px;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background-color: #00a3b3;
+        }
+        
     </style>
 
 </head>
@@ -253,8 +270,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="container">
         <h1><?= strtoupper(str_replace('_', ' ', htmlspecialchars($_SESSION['role']))); ?> DASHBOARD</h1>
         <h2>Selamat Datang, <?= htmlspecialchars($_SESSION['username']); ?>!</h2>
-        <a href="admin_dashboard.php" class="logout-btn">Home</a>
-        <a href="login.php" class="logout-btn">Logout</a>
+        <div class="container-log">
+                <a href="admin_dashboard.php" class="logout-btn">Home</a>
+                <a href="login.php" class="logout-btn">Logout</a>
+            </div>
 
         <?php if (isset($_SESSION['error_message'])): ?>
             <p style="color: red;"><?= $_SESSION['error_message'];
