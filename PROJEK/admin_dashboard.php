@@ -7,8 +7,8 @@ if (!isset($_SESSION['username']) || !in_array($_SESSION['role'], ['admin', 'adm
 }
 
 $servername = "localhost";
-$dbUsername = "root";
-$dbPassword = "";
+$dbUsername = "pemweb";
+$dbPassword = "admin_123";
 $dbname = "layanan";
 
 $conn = new mysqli($servername, $dbUsername, $dbPassword, $dbname);
@@ -16,22 +16,29 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
+
 // Tambah pengguna baru
 if (isset($_POST['add_user'])) {
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
     $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
-
-    $stmt = $conn->prepare("INSERT INTO tb_user (username, email, password, role) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $username, $email, $password, $role);
-
-    if ($stmt->execute()) {
-        $_SESSION['success_message'] = "Pengguna berhasil ditambahkan!";
+    // Validasi email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['error_message'] = "Email tidak valid. Silakan masukkan email yang benar.";
     } else {
-        $_SESSION['error_message'] = "Gagal menambahkan pengguna: " . $conn->error;
+        $stmt = $conn->prepare("INSERT INTO tb_user (username, email, password, role) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $username, $email, $password, $role);
+
+        if ($stmt->execute()) {
+            $_SESSION['success_message'] = "Pengguna berhasil ditambahkan!";
+        } else {
+            $_SESSION['error_message'] = "Gagal menambahkan pengguna: " . $conn->error;
+        }
+        header('Location: admin_dashboard.php');
+        exit();
     }
-    header('Location: admin_dashboard.php');
+    header('Location: admin_dashboard.php'); // Refresh untuk menghapus data POST
     exit();
 }
 
@@ -167,7 +174,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        h1, h2 {
+        h1,
+        h2 {
             text-align: center;
         }
 
@@ -182,7 +190,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             font-weight: bold;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 8px;
             margin-bottom: 20px;
@@ -209,7 +218,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin-top: 20px;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: center;
@@ -236,20 +246,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             text-align: center;
         }
     </style>
-    
+
 </head>
 
 <body>
     <div class="container">
-        <h1>Admin Dashboard</h1>
+        <h1><?= strtoupper(str_replace('_', ' ', htmlspecialchars($_SESSION['role']))); ?> DASHBOARD</h1>
+        <h2>Selamat Datang, <?= htmlspecialchars($_SESSION['username']); ?>!</h2>
+        <a href="artikel.php" class="logout-btn">Kelola Artikel</a>
         <a href="login.php" class="logout-btn">Logout</a>
 
         <?php if (isset($_SESSION['error_message'])): ?>
-            <p style="color: red;"><?= $_SESSION['error_message']; unset($_SESSION['error_message']); ?></p>
+            <p style="color: red;"><?= $_SESSION['error_message'];
+            unset($_SESSION['error_message']); ?></p>
         <?php endif; ?>
 
         <?php if (isset($_SESSION['success_message'])): ?>
-            <p style="color: green;"><?= $_SESSION['success_message']; unset($_SESSION['success_message']); ?></p>
+            <p style="color: green;"><?= $_SESSION['success_message'];
+            unset($_SESSION['success_message']); ?></p>
         <?php endif; ?>
 
         <h2>Tambah Pengguna Baru</h2>
@@ -295,81 +309,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <td class="action-btn">
                             <a href="edit_user.php?id=<?= $row['id']; ?>">Edit</a>
                             <a href="admin_dashboard.php?delete_id=<?= $row['id']; ?>"
-                               onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?')">Hapus</a>
+                                onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?')">Hapus</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>
         </table>
-        <h2>Edit artikel </h2>
-        <!-- <a href="artkel.php" label="edit"></a> -->
-        <?php if ($message): ?>
-        <p><?= htmlspecialchars($message); ?></p>
-    <?php endif; ?>
-
-    <!-- Form Tambah/Edit Artikel -->
-    <form action="admin_dashboard.php" method="POST" style="margin-bottom: 20px;">
-        <input type="hidden" name="action" value="create">
-        <input type="hidden" name="id" value="">
-        <input type="text" name="judul" placeholder="Judul Artikel" required>
-        <input type="url" name="link" placeholder="Link Artikel" required>
-        <button type="submit">Tambah Artikel</button>
-    </form>
-
-    <!-- Tabel Artikel -->
-    <table border="1" cellpadding="10" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Judul</th>
-                <th>Link</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $result = $conn->query("SELECT * FROM tb_artikel ORDER BY created_at DESC");
-            if ($result->num_rows > 0):
-                while ($row = $result->fetch_assoc()):
-            ?>
-            <tr>
-                <td><?= $row['id']; ?></td>
-                <td><?= htmlspecialchars($row['judul']); ?></td>
-                <td><a href="<?= htmlspecialchars($row['link']); ?>" target="_blank">Buka</a></td>
-                <td>
-                    <!-- Form Edit Artikel -->
-                    <form action="admin_dashboard.php" method="POST" style="display: inline;">
-                        <input type="hidden" name="action" value="update">
-                        <input type="hidden" name="id" value="<?= $row['id']; ?>">
-                        <input type="text" name="judul" value="<?= htmlspecialchars($row['judul']); ?>" required>
-                        <input type="url" name="link" value="<?= htmlspecialchars($row['link']); ?>" required>
-                        <button type="submit">Simpan Perbahan</button>
-                    </form>
-
-                    <!-- Form Hapus Artikel -->
-                    <form action="admin_dashboard.php" method="POST" style="display: inline;">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="id" value="<?= $row['id']; ?>">
-                        <button type="submit" onclick="return confirm('Yakin ingin menghapus artikel ini?')">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-            <?php
-                endwhile;
-            else:
-            ?>
-            <tr>
-                <td colspan="4">Belum ada artikel.</td>
-            </tr>
-            
-            <?php endif; ?>
-            
-        </tbody>
-    </table>
-    <a href="admin_dashboard.php">Kembali ke Dashboard</a>
+        
+        <a href="admin_dashboard.php">Kembali ke Dashboard</a>
     </div>
 </body>
 
 </html>
-
-

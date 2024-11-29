@@ -37,35 +37,44 @@ if (!$user) {
 
 // Cek role yang boleh mengedit
 if (
-    ($_SESSION['role'] === 'admin' && $user['role'] === 'admin_super') || 
-    ($_SESSION['role'] === 'admin' && $user['role'] === 'admin')
+    ($_SESSION['role'] === 'admin' && $user['role'] === 'admin_super') || // Admin tidak boleh edit admin_super
+    ($_SESSION['role'] === 'admin' && $user['role'] === 'admin' && $user['username'] !== $_SESSION['username']) // Admin tidak boleh edit admin lain
 ) {
     $_SESSION['error_message'] = "Anda tidak diizinkan mengedit pengguna ini.";
     header('Location: admin_dashboard.php');
     exit();
 }
 
+
 // Proses update data
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
     $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
     $role = $_POST['role'];
+    $password = htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8');
 
-    $stmt = $conn->prepare("UPDATE tb_user SET username = ?, email = ?, role = ? WHERE id = ?");
-    $stmt->bind_param("sssi", $username, $email, $role, $user_id);
-
-    if ($stmt->execute()) {
-        $_SESSION['success_message'] = "Data pengguna berhasil diperbarui!";
+    // Validasi email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['error_message'] = "Email tidak valid. Silakan masukkan email yang benar.";
     } else {
-        $_SESSION['error_message'] = "Gagal memperbarui data pengguna.";
+        $stmt = $conn->prepare("UPDATE tb_user SET username = ?, email = ?, role = ? WHERE id = ?");
+        $stmt->bind_param("sssi", $username, $email, $role, $user_id);
+
+        if ($stmt->execute()) {
+            $_SESSION['success_message'] = "Data pengguna berhasil diperbarui!";
+        } else {
+            $_SESSION['error_message'] = "Gagal memperbarui data pengguna.";
+        }
+        header('Location: admin_dashboard.php');
+        exit();
     }
-    header('Location: admin_dashboard.php');
-    exit();
+    
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -113,7 +122,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #555;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
@@ -123,7 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             outline: none;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             border-color: #007bff;
         }
 
@@ -158,17 +169,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Edit Pengguna</h1>
 
         <?php if (isset($_SESSION['error_message'])): ?>
-            <p style="color: red;"><?= $_SESSION['error_message']; unset($_SESSION['error_message']); ?></p>
+            <p style="color: red;"><?= $_SESSION['error_message'];
+            unset($_SESSION['error_message']); ?></p>
         <?php endif; ?>
 
         <form action="edit_user.php?id=<?= $user['id']; ?>" method="POST">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username']); ?>" required>
+            <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username']); ?>"
+                required>
 
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']); ?>" required>
@@ -180,11 +194,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
                 <?php endif; ?>
             </select>
-
+            <?php if ($_SESSION['username'] === $user['username']): ?>
+                <label for="password">Password Baru:</label>
+                <input type="password" id="password" name="password"
+                    placeholder="Kosongkan jika tidak ingin mengganti password">
+            <?php endif; ?>
             <button type="submit">Perbarui Data</button>
         </form>
     </div>
 </body>
+
 </html>
 
 <?php
